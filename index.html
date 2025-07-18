@@ -1,325 +1,491 @@
-```html
-
-
-
-  
-  
-  Abhijaat's AI Number Mastery
-  
-  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Abhijaat's Number Mastery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
     body {
       background: linear-gradient(to bottom right, #60a5fa, #a855f7);
       font-family: 'Segoe UI', sans-serif;
-      font-size: 17px;
+      color: white;
+      font-size: 16px;
       margin: 0;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-      color: #fff;
+      padding: 1rem;
     }
-    .card { background: rgba(255,255,255,0.12); border-radius: 1.1rem; padding: 1.4rem; }
-    .spellbox {
-      font-size: 2.2rem;
+    .repeat-btn {
+      background: #fbbf24;
+      color: #1a1a1a;
+      border-radius: 50px;
+      padding: 1rem 2rem;
       font-weight: bold;
+      display: block;
+      margin: 1rem auto;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .spellbox {
       text-align: center;
-      background: rgba(25,25,25,0.08);
-      border-radius: 1.2rem;
-      margin: 0.5rem 0;
-      letter-spacing: .03em;
-      padding: 1.3rem 0;
-      color: #fff;
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 1rem 0;
+      padding: 1rem;
+      border-radius: 1rem;
+      background: rgba(255,255,255,0.1);
       text-transform: uppercase;
     }
     .option-btn {
-      font-size: 26px;
+      font-size: 1.5rem;
       font-weight: bold;
-      border-radius: 1.2rem;
-      background: linear-gradient(to right, #6366f1, #7c3aed);
+      background: linear-gradient(to right, #6366f1, #9333ea);
       color: white;
-      padding: 1.2rem 0;
-      margin: .2rem 0;
-      width: 100%;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      transition: transform .15s;
-      position: relative;
-      z-index: 1;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: transform 0.1s;
     }
-    .option-btn:active { transform: scale(0.96);}
-    button:disabled { opacity: .6;}
-    .bear-btn {
-      display: block;
-      margin: 0 auto 1rem auto;
-      padding: 0;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-    }
-    .dashboard-modal {
-      background: rgba(0,0,0,.65);
-      position: fixed; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      z-index: 100;
-    }
-    .dashboard-in {
-      background: #fff;
-      color: #222;
-      width: 95vw; max-width: 410px; border-radius: 15px;
-      max-height: 92vh; overflow-y: auto;
-      padding: 2.2rem 1.2rem 1.1rem 1.2rem;
-    }
-    input, textarea { font-size: 16px;}
-    .stars-animate {
-      position: absolute;
-      top: 46%;
+    .option-btn:active { transform: scale(0.95); }
+
+    .star-animate {
+      position: fixed;
+      top: 40%;
       left: 50%;
-      width: 150px;
-      height: 50px;
-      z-index: 9;
       transform: translate(-50%, -50%);
+      font-size: 3rem;
+      animation: stars 1s ease-in forwards;
       pointer-events: none;
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      align-items: center;
-      animation: starsPop 0.9s ease-in;
+      z-index: 99;
     }
-    @keyframes starsPop {
-      0% { opacity: 0; transform: scale(0.7) translate(-50%,-50%);}
-      40% { opacity: 1; transform: scale(1.1) translate(-50%,-50%);}
-      80% { opacity: 1;}
-      100% { opacity: 0; transform: scale(1.1) translate(-50%,-60%);}
+    @keyframes stars {
+      0% { opacity: 0; transform: scale(0.5) translate(-50%,-50%); }
+      30% { opacity: 1; transform: scale(1.3) translate(-50%,-60%); }
+      100% { opacity: 0; transform: scale(1) translate(-50%,-50%); }
     }
-    .star {
-      font-size: 2.5rem;
-      color: gold;
-      filter: drop-shadow(2px 2px 3px #ffaa0036);
-      opacity: 0.97;
-    }
-  
+  </style>
+</head>
+<body>
+  <div class="max-w-xl mx-auto">
+    <h1 class="text-2xl font-bold text-center mb-2">🎓 Abhijaat’s Number Game</h1>
+    <button onclick="repeatNumber()" class="repeat-btn">🔊 REPEAT</button>
+    <div id="numberBox" class="spellbox">--</div>
+    <div id="optionButtons" class="grid grid-cols-2 gap-4 mb-4"></div>
+    <div class="text-center text-lg font-semibold h-6" id="resultBox"></div>
+    <div id="starContainer"></div>
+    <div class="bg-white/10 text-sm rounded-xl p-4 space-y-2 mt-4">
+      <div id="phaseInfo"></div>
+      <div id="progressInfo"></div>
+      <div id="weakList" class="text-yellow-200">Weak Numbers: None</div>
+      <div id="phaseLockMsg" class="text-pink-400 font-bold"></div>
+    </div>
+    <div class="text-center mt-3">
+      <button onclick="openDashboard()" class="underline text-xs">🔐 Parent Dashboard</button>
+    </div>
+  </div>
 
-
-
-  🎓 Abhijaat’s Number Mastery
-  Touch the bear to replay the number.Tap the answer!
-  
-    
-    
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-    
-  
-  
-  
-    Which number is this?
-    --
-  
-  
-  
-  
-    
-    
-    
-    
-  
-  
-    🔐 Parent Dashboard
-  
-  
-    
-      Parent Dashboard
-      
-      ✅ Approve Phase Advancement
-      🚀 Start Booster Mode
-      
-      📋 Start Custom Test
-      ⬇️ Export as CSV
-      Close
-    
-  
-
-
+  <!-- Parent Modal UI will go here -->
+<script>
+// ---------------------
+// Phase Structure & Game State
+// ---------------------
 const phases = {
-  1: { name: "Foundation Review", new: [31,40], review: [20,30], reviewPercentage: 35, questionsNeeded: 20, next: 2 },
-  2: { name: "Expansion", new: [41,50], review: [20,40], reviewPercentage: 35, questionsNeeded: 20, next: 3 },
-  3: { name: "Consolidation", new: [51,60], review: [20,50], reviewPercentage: 40, questionsNeeded: 20, next: 4 },
-  4: { name: "Advanced", new: [61,70], review: [20,60], reviewPercentage: 40, questionsNeeded: 20, next: 5 },
-  5: { name: "Mastery", new: [71,80], review: [20,70], reviewPercentage: 45, questionsNeeded: 20, next: 6 },
-  6: { name: "Completion!", new: [81,100], review: [20,80], reviewPercentage: 50, questionsNeeded: 20 }
+  1: { name: "Foundation", new: [31, 40], review: [11, 19] },
+  2: { name: "Growth", new: [41, 50], review: [31, 40] },
+  3: { name: "Advance", new: [51, 60], review: [41, 50] },
+  4: { name: "Mastery I", new: [61, 70], review: [51, 60] },
+  5: { name: "Mastery II", new: [71, 80], review: [61, 70] },
+  6: { name: "Final Step", new: [81, 100], review: [71, 80] }
 };
+
 let state = {
   phase: 1,
-  mastery: {},    // e.g., {"22":{attempts:3, correct:2}}
-  total: 0,
-  approved: false,
-  boosterMode: false,
+  mastery: {},        // {34: {tries: X, correct: Y, weakStreak: Z}}
+  scheduled: [],
+  weakQueue: [],
+  weakIndex: 0,
+  weakTracker: {},
+  currentNum: null,
   customTest: null,
-  customIndex: 0
+  customIndex: 0,
+  showWeak: false,
+  approved: false
 };
+
+// ---------------------
+// Number → Words
+// ---------------------
 function numberToWords(n) {
-  let o=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine"],
-      t=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"],
-      teens=["Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
-  if(nvi.lang==="en-IN"&&/ravi|veena/i.test(vi.name)) ||
-            v.find(vi=>vi.lang==="en-IN") ||
-            v.find(vi=>/^en/.test(vi.lang));
+  const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
+  const teens = ["Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+  const tens = ["", "", "Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+  if (n < 10) return ones[n];
+  if (n < 20) return teens[n - 10];
+  const [t, o] = [Math.floor(n/10), n%10];
+  return tens[t] + (o ? " " + ones[o] : "");
+}
+
+// ---------------------
+// VOICE: Isha first, fallback to Ravi/Veena or en-IN
+// ---------------------
+function speak(text) {
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 0.9;
+  const voices = window.speechSynthesis.getVoices();
+  u.voice =
+    voices.find(v => v.name?.toLowerCase().includes("isha")) ||
+    voices.find(v => v.name?.toLowerCase().includes("ravi")) ||
+    voices.find(v => v.name?.toLowerCase().includes("veena")) ||
+    voices.find(v => v.lang === "en-IN") ||
+    voices.find(v => /^en-/.test(v.lang)) ||
+    voices[0];  // Fallback to default
   window.speechSynthesis.speak(u);
 }
-function getPhasePool() {
-  const ph = phases[state.phase];
-  let pool = [];
-  for(let i=ph.review[0];i !state.mastery[n] || state.mastery[n].correct  state.mastery[n] && state.mastery[n].attempts>0 && state.mastery[n].correct===state.mastery[n].attempts);
-}
-function pickNumber() {
-  let boosterNums = getWeakNums();
-  if(state.boosterMode && boosterNums.length)
-    return boosterNums[Math.floor(Math.random()*boosterNums.length)];
-  let phase = phases[state.phase], useWeak = Math.random()
-    ★
-    ★
-    ★
-    ★
-    ★
-  `;
-  el.style.display="block";
-  setTimeout(()=>{el.style.display="none";},950);
-}
-function showQ() {
-  let n;
-  if(state.customTest){
-    n = state.customTest[state.customIndex];
-    if(n===undefined){ // test done
-      alert("✅ Custom test complete! Returning to main mode.");
-      state.customTest=null; state.customIndex=0; showQ(); return;
-    }
-  } else {
-    n = pickNumber();
+
+function repeatNumber() {
+  if (state.currentNum != null) {
+    speak(numberToWords(state.currentNum));
   }
+}
+
+// -------------------
+// Phase Scheduler: 3× new, 2× review, shuffled
+// -------------------
+function buildSchedule() {
+  const ph = phases[state.phase];
+  const newNums = Array.from({length: ph.new[1]-ph.new[0]+1}, (_,i)=>ph.new[0]+i);
+  const reviewNums = Array.from({length: ph.review[1]-ph.review[0]+1}, (_,i)=>ph.review[0]+i);
+  state.scheduled = [
+    ...newNums.flatMap(num => [num,num,num]),
+    ...reviewNums.flatMap(num => [num,num])
+  ].sort(() => Math.random() - 0.5);
+}
+</script>
+<script>
+// ------- Tricky Option Generation (Always includes correct answer!) -------
+function generateOptions(correct) {
+  let distractors = new Set();
+
+  // Add ±1 to ±7, but skip 'correct' and out-of-range
+  [-7, -4, -3, -2, -1, 1, 2, 3, 4, 7].forEach(offset => {
+    let v = correct + offset;
+    if (v >= 11 && v <= 100 && v !== correct) distractors.add(v);
+  });
+
+  // 6 <-> 9 swap
+  let str = String(correct);
+  if (str.includes("6")) {
+    let swapped = parseInt(str.replace("6", "9"));
+    if (swapped !== correct && swapped >= 11 && swapped <= 100) distractors.add(swapped);
+  }
+  if (str.includes("9")) {
+    let swapped = parseInt(str.replace("9", "6"));
+    if (swapped !== correct && swapped >= 11 && swapped <= 100) distractors.add(swapped);
+  }
+
+  // Reversed digits (if not the same)
+  if (str.length === 2 && str[0] !== str[1]) {
+    let rev = parseInt(str.split("").reverse().join(""));
+    if (rev !== correct && rev >= 11 && rev <= 100) distractors.add(rev);
+  }
+
+  // If fewer than 3 distractors, add randoms from same tens group
+  while (distractors.size < 6) {
+    let guess = Math.floor(correct / 10) * 10 + Math.floor(Math.random() * 10);
+    if (guess >= 11 && guess <= 100 && guess !== correct) distractors.add(guess);
+  }
+
+  // Combine correct + 3 distractors, shuffled
+  let final = [correct, ...Array.from(distractors).filter(n => n !== correct).slice(0, 3)];
+  return final.sort(() => Math.random() - 0.5);
+}
+
+// ------ Main Question Loop ------
+function showNext() {
+  // Custom Test Mode
+  if (state.customTest) {
+    if (state.customIndex >= state.customTest.length) {
+      state.customTest = null;
+      state.customIndex = 0;
+      showNext();
+      return;
+    }
+    presentQuestion(state.customTest[state.customIndex]);
+    state.customIndex++;
+    return;
+  }
+
+  // Weakness "3-in-a-row" mode
+  if (state.showWeak && state.weakQueue.length) {
+    let n = state.weakQueue[state.weakIndex % state.weakQueue.length];
+    presentQuestion(n, true);
+    state.weakIndex = (state.weakIndex + 1) % state.weakQueue.length;
+    return;
+  }
+
+  // Scheduled (phase) mode
+  if (state.scheduled.length) {
+    let n = state.scheduled.shift();
+    presentQuestion(n);
+    return;
+  }
+
+  // Mastery check
+  finishPhaseOrWeakMode();
+}
+
+// ------ Present a Question ------
+function presentQuestion(n, isWeakMode) {
   state.currentNum = n;
-  document.getElementById("spellbox").textContent = numberToWords(n).toUpperCase();
-  let correct = n, opts = [correct];
-  while (opts.length Math.random()-.5);
-  let cont=document.getElementById("options");
-  cont.innerHTML="";
-  let attempted = false;
-  opts.forEach(val=>{
-    let btn=document.createElement("button");
-    btn.textContent=val;
-    btn.className="option-btn";
-    btn.onclick = ()=>{
-      if(attempted) return; attempted=true;
-      state.mastery[correct] = state.mastery[correct]||{attempts:0,correct:0};
-      state.mastery[correct].attempts++;
-      state.total++;
-      if(val===correct){
-        state.mastery[correct].correct++;
-        document.getElementById("resultBox").textContent="✅ Correct!";
+  document.getElementById("numberBox").textContent = numberToWords(n).toUpperCase();
+  document.getElementById("resultBox").textContent = "";
+  document.getElementById("starContainer").innerHTML = "";
+
+  let opts = generateOptions(n);
+  let container = document.getElementById("optionButtons");
+  container.innerHTML = "";
+  let answered = false;
+
+  opts.forEach(opt => {
+    let btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.className = "option-btn";
+    btn.onclick = () => {
+      if (answered) return;
+      answered = true;
+
+      // Track tries/correct and weakstreak
+      if (!state.mastery[n]) state.mastery[n] = { tries: 0, correct: 0, weakStreak: 0 };
+      state.mastery[n].tries++;
+
+      let correct = (+opt === +n);
+
+      if (correct) {
+        state.mastery[n].correct++;
+        if (isWeakMode) state.mastery[n].weakStreak = (state.mastery[n].weakStreak || 0) + 1;
+        else state.mastery[n].weakStreak = 0;
+        document.getElementById("resultBox").textContent = "✅ Correct!";
         speak("Correct!");
         showStars();
       } else {
-        document.getElementById("resultBox").textContent=`❌ This is ${numberToWords(correct)}`;
-        speak(`Oops! This is number ${numberToWords(correct)}`);
+        if (isWeakMode) state.mastery[n].weakStreak = 0;
+        document.getElementById("resultBox").textContent = `❌ This is ${numberToWords(n)}`;
+        speak(`Oops! This is number ${numberToWords(n)}`);
       }
-      document.querySelectorAll(".option-btn").forEach(b=>b.disabled=true);
-      setTimeout(()=>{
-        document.getElementById("resultBox").textContent="";
-        if(state.customTest) { state.customIndex++; }
-        if(canAdvance()&&!state.approved){
-          document.getElementById("phaseLockMsg").textContent="🎉 100% Mastery! Awaiting parent approval.";
-          speak("Awaiting parent approval. Please call a parent.");
-        } else if(canAdvance()&&state.approved) {
-          state.phase++;
-          state.approved=false;
-          state.total=0;
-          alert("🎉 Phase up! Welcome to "+phases[state.phase].name);
+
+      document.querySelectorAll(".option-btn").forEach(b => b.disabled = true);
+
+      setTimeout(() => {
+        document.getElementById("resultBox").textContent = "";
+        // Remove weak number after 3-correct-in-row
+        if (isWeakMode && correct) {
+          if (state.mastery[n].weakStreak >= 3) {
+            state.weakQueue = state.weakQueue.filter(x => x !== n);
+            state.mastery[n].weakStreak = 0;
+          }
         }
-        showQ();
-        refreshStats();
-      }, 1500);
+        showNext();
+        updateStatsDisplay();
+      }, 1300);
     };
-    cont.appendChild(btn);
+    container.appendChild(btn);
   });
+
   speak(numberToWords(n));
-  refreshStats();
+  updateStatsDisplay();
 }
-document.getElementById("bearBtn").onclick = ()=>{ speak(numberToWords(state.currentNum)); };
-function refreshStats() {
-  let phase=phases[state.phase];
-  document.getElementById("phaseInfo").textContent=`Phase ${state.phase}: ${phase.name} [${phase.review[0]}-${phase.review[1]} review, ${phase.new[0]}-${phase.new[1]} new]`;
-  let done = Object.values(state.mastery).reduce((a,b)=>a+b.attempts,0);
-  let percent = Math.round(100*(done/(getPhasePool().length*2)));
-  document.getElementById("progressInfo").textContent=`Progress: ${percent}%`;
-  let weak=getWeakNums();
-  document.getElementById("weakList").textContent=weak.length?("📌 Weak: "+weak.join(", ")):"✅ No Weak Numbers";
-  document.getElementById("phaseLockMsg").textContent = (canAdvance()&&!state.approved)
-    ? "🎉 100% Mastery! Awaiting parent approval." : "";
+
+// ------ Mastery/Phase Check and Weak Loop ------
+function finishPhaseOrWeakMode() {
+  const ph = phases[state.phase];
+  const newNums = Array.from({length: ph.new[1] - ph.new[0] + 1}, (_,i) => ph.new[0] + i);
+  const reviewNums = Array.from({length: ph.review[1] - ph.review[0] + 1}, (_,i) => ph.review[0] + i);
+  const allSet = [...newNums, ...reviewNums];
+
+  // Weakness = not enough correct or not enough tries
+  const weak = allSet.filter(n =>
+    !state.mastery[n] ||
+    state.mastery[n].correct < ((newNums.includes(n)) ? 3 : 2) ||
+    state.mastery[n].correct < state.mastery[n].tries
+  );
+
+  if (weak.length) {
+    state.weakQueue = weak.slice();
+    state.weakIndex = 0;
+    state.showWeak = true;
+    showNext();
+    return;
+  }
+
+  document.getElementById("phaseLockMsg").textContent = "🎉 100% Mastery! Awaiting parent approval.";
+  speak("Phase complete. Awaiting parent approval. Please call a parent.");
 }
-function openLogin(){
-  let u=prompt("Username:"),p=prompt("Password:");
-  if(u==="suneet"&&p==="Suneet@123"){
-    document.getElementById("dashboard").classList.remove("hidden");
-    renderDash();
-  } else alert("Access denied.");
+</script>
+<script>
+// ----- Dashboard Logic -----
+function openDashboard() {
+  const user = prompt("Username:");
+  const pass = prompt("Password:");
+  if (user === "suneet" && pass === "Suneet@123") {
+    renderDashboard();
+    document.getElementById('dashboardModal').style.display = '';
+  } else {
+    alert("Access denied.");
+  }
 }
-function renderDash(){
-  let out='#✔Total%';
-  getPhasePool().forEach(n=>{
-    let d=state.mastery[n];
-    if(!d) out+=`${n}00--`;
-    else out+=`${n}${d.correct}${d.attempts}${Math.round(100*(d.correct/d.attempts))}%`;
+
+function closeDashboard() {
+  document.getElementById('dashboardModal').style.display = 'none';
+}
+
+function renderDashboard() {
+  const ph = phases[state.phase];
+  let nums = [];
+  for (let i = ph.new[0]; i <= ph.new[1]; i++) nums.push(i);
+  for (let i = ph.review[0]; i <= ph.review[1]; i++) if (!nums.includes(i)) nums.push(i);
+
+  let out = `<table class="text-xs w-full text-center mb-3"><thead><tr><th>#</th><th>✔</th><th>Tries</th><th>%</th></tr></thead><tbody>`;
+  nums.forEach(n => {
+    const d = state.mastery[n] || { correct: 0, tries: 0 };
+    let acc = d.tries ? Math.round((d.correct / d.tries) * 100) : "--";
+    out += `<tr><td>${n}</td><td>${d.correct}</td><td>${d.tries}</td><td>${acc}</td></tr>`;
   });
-  out+="";
-  let weak=getWeakNums();
-  out+=(weak.length?('Weak: '+weak.join(", ")+""):'No weaknesses!');
-  document.getElementById("dashStats").innerHTML=out;
-}
-function approvePhase(){
-  if(canAdvance()){
-    state.approved=true;
-    document.getElementById("dashboard").classList.add("hidden");
-    showQ();
-  } else alert("100% accuracy not yet reached!");
-}
-function startBooster(){
-  state.boosterMode=true;
-  document.getElementById("dashboard").classList.add("hidden");
-  showQ();
-}
-function startCustomTest(){
-  let val=document.getElementById("testInput").value.trim();
-  if(!val) return alert("Enter numbers");
-  let nums=val.split(",").map(x=>+x.trim()).filter(x=>x>=20&&x{
-    let d=state.mastery[n]||{correct:0,attempts:0};
-    let acc=d.attempts?Math.round(100*d.correct/d.attempts):"";
-    rows.push(`${n},${d.correct},${d.attempts},${acc}`);
+  out += "</tbody></table>";
+
+  const weak = nums.filter(n => {
+    const d = state.mastery[n];
+    const needed = (ph.new[0] <= n && n <= ph.new[1]) ? 3 : 2;
+    return !d || d.correct < needed;
   });
-  let csv=rows.join("\n");
-  let blob=new Blob([csv],{type:'text/csv'});
-  let a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);a.download="progress.csv";a.click();
+
+  out += weak.length
+    ? `<div class="text-yellow-600">Weak: ${weak.join(", ")}</div>`
+    : `<div class="text-green-600">✅ No Weak Numbers!</div>`;
+
+  document.getElementById("dashboardTable").innerHTML = out;
 }
-window.onload = ()=>{
-  setTimeout(()=>speechSynthesis.getVoices(),100); // Preload voices list
-  showQ();
+
+function approvePhase() {
+  const ph = phases[state.phase];
+  let allGood = true;
+
+  for (let i = ph.new[0]; i <= ph.new[1]; i++) {
+    const d = state.mastery[i];
+    if (!d || d.correct < 3 || d.correct < d.tries) {
+      allGood = false;
+      break;
+    }
+  }
+
+  for (let i = ph.review[0]; i <= ph.review[1]; i++) {
+    const d = state.mastery[i];
+    if (!d || d.correct < 2 || d.correct < d.tries) {
+      allGood = false;
+      break;
+    }
+  }
+
+  if (allGood) {
+    state.phase++;
+    if (!phases[state.phase]) {
+      alert("🎉 All phases complete! Restarting.");
+      resetProgress();
+      return;
+    }
+    alert(`✅ Phase advanced to: ${phases[state.phase].name}`);
+    closeDashboard();
+    initPhase();
+  } else {
+    alert("Not all numbers are mastered yet.");
+  }
+}
+
+function resetProgress() {
+  if (confirm("Are you sure? This will erase all progress.")) {
+    state = {
+      phase: 1,
+      mastery: {},
+      scheduled: [],
+      weakQueue: [],
+      weakIndex: 0,
+      weakTracker: {},
+      currentNum: null,
+      customTest: null,
+      customIndex: 0,
+      showWeak: false,
+      approved: false
+    };
+    closeDashboard();
+    initPhase();
+  }
+}
+
+function exportCSV() {
+  const rows = ["Number,Correct,Tries,Accuracy"];
+  const allNums = Object.keys(state.mastery).sort((a,b)=>+a - +b);
+  allNums.forEach(n => {
+    const d = state.mastery[n];
+    const acc = d.tries ? Math.round(d.correct / d.tries * 100) : "";
+    rows.push(`${n},${d.correct},${d.tries},${acc}`);
+  });
+  const blob = new Blob([rows.join("\n")], {type: "text/csv"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `Abhijaat_Progress_Phase${state.phase}.csv`;
+  a.click();
+}
+
+function startCustomTest() {
+  const raw = document.getElementById("customTestNums").value.trim();
+  if (!raw) return alert("Enter comma-separated numbers.");
+  const nums = raw.split(",").map(x => +x.trim()).filter(n => n >= 11 && n <= 100);
+  if (!nums.length) return alert("No valid numbers entered.");
+  state.customTest = nums;
+  state.customIndex = 0;
+  closeDashboard();
+  showNext();
+}
+
+function triggerBooster() {
+  const ph = phases[state.phase];
+  const nums = [];
+  for (let i = ph.new[0]; i <= ph.new[1]; i++) nums.push(i);
+  for (let i = ph.review[0]; i <= ph.review[1]; i++) if (!nums.includes(i)) nums.push(i);
+  const weak = nums.filter(n => {
+    const d = state.mastery[n];
+    const needed = (ph.new[0] <= n && n <= ph.new[1]) ? 3 : 2;
+    return !d || d.correct < needed;
+  });
+  if (!weak.length) {
+    alert("No weak numbers to boost!");
+    closeDashboard();
+    return;
+  }
+  state.weakQueue = weak;
+  state.weakIndex = 0;
+  state.showWeak = true;
+  closeDashboard();
+  showNext();
+}
+
+// ----- Star reward -------
+function showStars() {
+  const el = document.getElementById("starContainer");
+  el.innerHTML = `<div class="star-animate">
+    <span style="color: gold;">★</span>
+    <span style="color: gold;">★</span>
+    <span style="color: gold;">★</span>
+    <span style="color: gold;">★</span>
+    <span style="color: gold;">★</span>
+  </div>`;
+  setTimeout(() => el.innerHTML = "", 1200);
+}
+
+// ----- App Start -----
+window.onload = () => {
+  setTimeout(() => speechSynthesis.getVoices(), 100);
+  buildSchedule();
+  showNext();
 };
-
-
-
-```
+</script>
+</body>
+</html>
