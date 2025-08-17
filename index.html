@@ -1,491 +1,924 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Abhijaat's Number Mastery</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      background: linear-gradient(to bottom right, #60a5fa, #a855f7);
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
-      font-size: 16px;
-      margin: 0;
-      padding: 1rem;
-    }
-    .repeat-btn {
-      background: #fbbf24;
-      color: #1a1a1a;
-      border-radius: 50px;
-      padding: 1rem 2rem;
-      font-weight: bold;
-      display: block;
-      margin: 1rem auto;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
-    .spellbox {
-      text-align: center;
-      font-size: 2rem;
-      font-weight: bold;
-      margin: 1rem 0;
-      padding: 1rem;
-      border-radius: 1rem;
-      background: rgba(255,255,255,0.1);
-      text-transform: uppercase;
-    }
-    .option-btn {
-      font-size: 1.5rem;
-      font-weight: bold;
-      background: linear-gradient(to right, #6366f1, #9333ea);
-      color: white;
-      border-radius: 0.75rem;
-      padding: 1rem;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      transition: transform 0.1s;
-    }
-    .option-btn:active { transform: scale(0.95); }
-
-    .star-animate {
-      position: fixed;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 3rem;
-      animation: stars 1s ease-in forwards;
-      pointer-events: none;
-      z-index: 99;
-    }
-    @keyframes stars {
-      0% { opacity: 0; transform: scale(0.5) translate(-50%,-50%); }
-      30% { opacity: 1; transform: scale(1.3) translate(-50%,-60%); }
-      100% { opacity: 0; transform: scale(1) translate(-50%,-50%); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Sequence Worksheets Generator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; min-height: 100vh; }
+        .control-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); text-align: center; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .subtitle { color: #666; font-size: 1.4rem; margin-bottom: 30px; opacity: 0.8; }
+        .worksheet-options { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .section-title { width: 100%; margin: 20px 0 15px; font-size: 1.7rem; color: #444; font-weight: 600; }
+        .option-btn { padding: 15px 25px; border: 2px solid #667eea; background: rgba(255, 255, 255, 0.9); color: #667eea; border-radius: 50px; cursor: pointer; font-weight: 600; font-size: 18.2px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .option-btn:hover, .option-btn.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4); }
+        .generate-btn, .print-btn { background: linear-gradient(135deg, #56ab2f, #a8e6cf); color: white; border: none; padding: 18px 35px; border-radius: 50px; font-size: 20.8px; font-weight: bold; cursor: pointer; margin: 10px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 25px rgba(86, 171, 47, 0.3); }
+        .generate-btn:hover, .print-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(86, 171, 47, 0.4); }
+        .print-btn { background: linear-gradient(135deg, #ff6b6b, #ffa726); box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3); }
+        .print-btn:hover { box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4); }
+        .custom-input-group { background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 15px; margin: 20px 0; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .custom-input-group label { display: block; margin-bottom: 10px; color: #444; font-weight: 600; font-size: 18.2px; }
+        .custom-input-group input[type="text"], .custom-input-group input[type="number"], .custom-input-group select { padding: 12px 15px; border: 2px solid #e1e5e9; border-radius: 10px; font-size: 20.8px; transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); width: 100%; }
+        .custom-input-group input[type="text"]:focus, .custom-input-group input[type="number"]:focus, .custom-input-group select:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .input-hint { font-size: 18.2px; color: #888; margin-top: 8px; font-style: italic; }
+        .worksheet-control-section { background: rgba(255, 255, 255, 0.9); padding: 25px; border-radius: 15px; margin: 20px 0; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .worksheet-control-section h4 { color: #667eea; margin-bottom: 15px; font-size: 23.4px; text-align: center; font-weight: bold; }
+        .control-row { display: flex; gap: 20px; align-items: center; justify-content: center; margin-bottom: 15px; }
+        .control-input { text-align: center; padding: 12px 15px; border: 2px solid #667eea; border-radius: 15px; font-size: 23.4px; font-weight: bold; color: #667eea; background: white; width: 80px; transition: all 0.3s ease; }
+        .control-input:focus { outline: none; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2); }
+        .control-label { font-weight: 600; color: #444; font-size: 20.8px; }
+        .generation-progress { display: none; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); text-align: center; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .generation-progress.show { display: block; }
+        .progress-bar { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.3); border-radius: 4px; margin: 20px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(135deg, #56ab2f, #a8e6cf); width: 0%; transition: width 0.3s ease; }
+        .worksheet { width: 210mm; max-height: 297mm; background: #fff; margin: 0 auto 20px; padding: 10mm 15mm; box-shadow: 0 10px 30px rgba(0,0,0,0.1); page-break-inside: avoid; }
+        .worksheet-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .worksheet-title { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 5px; }
+        .worksheet-subtitle { font-size: 16px; color: #666; }
+        .questions-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        .question-item { display: flex; align-items: center; font-size: 20.8px; font-weight: 700; padding: 10px 0; page-break-inside: avoid; }
+        .question-item.sequence-type { flex-direction: column; align-items: flex-start; grid-column: span 2; padding: 15px; }
+        .question-item.before-type, .question-item.after-type { display: flex; align-items: center; padding: 10px 0; page-break-inside: avoid; }
+        .question-content { display: flex; flex-direction: row; align-items: center; flex: 1; }
+        .question-content h4 { color: #000; font-size: 20.8px; font-weight: 700; margin-bottom: 0; }
+        .question-content-inner { display: flex; align-items: center; }
+        
+        /* FIXED: Before type - answer box on left, question on right */
+        .question-item.before-type .question-content { 
+            justify-content: flex-start; 
+        }
+        .question-item.before-type .question-content h4 { 
+            margin-left: 15px; 
+            order: 1;
+        }
+        .question-item.before-type .question-content-inner { 
+            order: 0; 
+        }
+        
+        /* FIXED: After type - question on left, answer box on right */
+        .question-item.after-type .question-content { 
+            justify-content: flex-start; 
+        }
+        .question-item.after-type .question-content h4 { 
+            margin-right: 15px; 
+            order: 0;
+        }
+        .question-item.after-type .question-content-inner { 
+            order: 1; 
+        }
+        
+        .question-item.between-type { 
+            justify-content: center; 
+            flex-wrap: wrap; 
+            align-items: center;
+            gap: 15px;
+        }
+        .question-item.between-type .question-content {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            justify-content: center;
+        }
+        .question-item.between-type .question-content h4 {
+            margin: 0;
+            font-size: 20.8px;
+            font-weight: 700;
+        }
+        .question-item.between-type .question-content-inner {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .between-elements {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .question-number { border: 0.5px dashed #000; color: #000; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 10px; font-size: 18.2px; font-weight: 700; background: #fff; }
+        .question-text { color: #000; font-weight: 700; font-size: 20.8px; }
+        .answer-box { border: 0.5px dashed #000; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-weight: 700; background: #fff; }
+        
+        .answer-box.letter-box { 
+            width: 50px; 
+            height: 60px; 
+            font-size: 23px; 
+            position: relative; 
+            overflow: visible;
+            border: 1px solid #000;
+        }
+        .answer-box.letter-box::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0; 
+            right: 0;
+            border-top: 0.5px dashed #ccc;
+        }
+        .answer-box.letter-box .line-1 {
+            position: absolute;
+            top: 30px;
+            left: 0; 
+            right: 0;
+            border-top: 0.5px dashed #ccc;
+        }
+        .answer-box.letter-box .line-2 {
+            position: absolute;
+            top: 45px;
+            left: 0; 
+            right: 0;
+            border-top: 0.5px dashed #ccc;
+        }
+        
+        .answer-box.number-box { width: 50px; height: 50px; border: 1px solid #000; border-radius: 2px; font-size: 24px; font-weight: 700; }
+        .between-letter { border: 1px solid #000; color: #000; width: 50px; height: 50px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; background: #fff; }
+        .sequence-container { border: 0.5px dashed #000; padding: 8px; margin: 8px 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 3px; max-width: 100%; }
+        .sequence-number { border: 0.5px dashed #000; color: #000; border-radius: 2px; width: 37.8px; height: 37.8px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; background: #fff; }
+        .sequence-blank { border: 0.5px dashed #000; background: #fff; width: 37.8px; height: 37.8px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; }
+        .number-sequence-item .sequence-number, .number-sequence-item .sequence-blank { width: 37.8px; height: 37.8px; font-size: 18px; }
+        .alphabet-sequence-item .sequence-number { width: 32px; height: 32px; font-size: 16px; }
+        
+        .alphabet-sequence-item .sequence-blank.letter-box { 
+            width: 40px; 
+            height: 45px; 
+            font-size: 18px; 
+            position: relative; 
+            overflow: visible;
+            border: 1px solid #000;
+        }
+        .alphabet-sequence-item .sequence-blank.letter-box::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 0; 
+            right: 0;
+            border-top: 0.5px dashed #ccc;
+        }
+        .alphabet-sequence-item .sequence-blank.letter-box .line-1 {
+            position: absolute;
+            top: 24px;
+            left: 0; 
+            right: 0;
+            border-top: 0.5px dashed #ccc;
+        }
+        .alphabet-sequence-item .sequence-blank.letter-box .line-2 {
+            position: absolute;
+            top: 36px;
+            left: 0; 
+            right: 0;
+            border-top: 0.5px dashed #ccc;
+        }
+        
+        .hidden { display: none; }
+        .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; margin-left: 10px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .success-checkmark { display: inline-block; width: 20px; height: 20px; margin-left: 10px; opacity: 0; animation: checkmark 0.5s ease-in-out forwards; }
+        @keyframes checkmark { 0% { opacity: 0; transform: scale(0); } 100% { opacity: 1; transform: scale(1); } }
+        .worksheet { animation: fadeInUp 0.6s ease-out; }
+        .preview-panel { display: none; background: #f5f5f5; padding: 20px; border-radius: 15px; margin: 20px 0; width: 793px; margin-left: auto; margin-right: auto; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .preview-panel.show { display: block; }
+        .preview-header { font-size: 1.5rem; color: #444; font-weight: 600; margin-bottom: 15px; }
+        @keyframes fadeInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideOutRight { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(20px); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media print {
+            body { background: #fff !important; padding: 0 !important; margin: 0 !important; }
+            .control-panel, .generation-progress, .preview-panel { display: none !important; }
+            .worksheet { margin: 0 !important; width: 100% !important; max-height: 297mm !important; padding: 8mm 12mm !important; background: #fff !important; box-shadow: none !important; page-break-inside: avoid !important; }
+            .worksheet:not(:first-child) { page-break-before: always !important; }
+            .question-item, .question-text, .answer-box { font-size: 20.8px !important; }
+            .answer-box.letter-box { font-size: 23px !important; width: 50px !important; height: 60px !important; }
+            .answer-box.number-box { font-size: 24px !important; width: 50px !important; height: 50px !important; }
+            .question-content h4 { font-size: 20.8px !important; }
+            .question-number { font-size: 18.2px !important; }
+            .number-sequence-item .sequence-number, .number-sequence-item .sequence-blank { font-size: 16px !important; width: 32px !important; height: 32px !important; }
+            .alphabet-sequence-item .sequence-number { font-size: 14px !important; width: 28px !important; height: 28px !important; }
+            .alphabet-sequence-item .sequence-blank.letter-box { font-size: 16px !important; width: 35px !important; height: 40px !important; }
+            .sequence-container { padding: 5px !important; margin: 5px 0 !important; gap: 2px !important; }
+            .between-letter { width: 50px !important; height: 50px !important; font-size: 24px !important; }
+        }
+        
+        @page { size: A4; margin: 0; }
+    </style>
 </head>
 <body>
-  <div class="max-w-xl mx-auto">
-    <h1 class="text-2xl font-bold text-center mb-2">🎓 Abhijaat’s Number Game</h1>
-    <button onclick="repeatNumber()" class="repeat-btn">🔊 REPEAT</button>
-    <div id="numberBox" class="spellbox">--</div>
-    <div id="optionButtons" class="grid grid-cols-2 gap-4 mb-4"></div>
-    <div class="text-center text-lg font-semibold h-6" id="resultBox"></div>
-    <div id="starContainer"></div>
-    <div class="bg-white/10 text-sm rounded-xl p-4 space-y-2 mt-4">
-      <div id="phaseInfo"></div>
-      <div id="progressInfo"></div>
-      <div id="weakList" class="text-yellow-200">Weak Numbers: None</div>
-      <div id="phaseLockMsg" class="text-pink-400 font-bold"></div>
+    <div class="control-panel">
+        <h1 style="font-size: 2.5rem; color: #667eea; margin-bottom: 10px; font-weight: 700;">🎓 Smart Sequence Worksheets</h1>
+        <p class="subtitle">Create professional printable worksheets for alphabet and number sequences</p>
+        <div class="worksheet-control-section">
+            <h4>📄 Worksheet Configuration</h4>
+            <div class="control-row">
+                <span class="control-label">Number of Worksheets:</span>
+                <input type="number" id="worksheetCount" class="control-input" value="1" min="1" max="10" aria-label="Number of worksheets">
+                <span class="input-hint">Generate multiple worksheets (1-10)</span>
+            </div>
+            <div class="control-row">
+                <span class="control-label">Questions per Worksheet:</span>
+                <input type="number" id="questionsPerWorksheet" class="control-input" value="20" min="5" max="50" aria-label="Questions per worksheet">
+                <span class="input-hint">Choose 5-50 questions per worksheet</span>
+            </div>
+        </div>
+        <div class="worksheet-options">
+            <h3 class="section-title">📚 Choose Test Type</h3>
+            <button class="option-btn" onclick="selectMainType('alphabet')" aria-label="Select Alphabet Sequences">🔤 Alphabet Sequences</button>
+            <button class="option-btn" onclick="selectMainType('number')" aria-label="Select Number Sequences">🔢 Number Sequences</button>
+        </div>
+        <div id="alphabet-options" class="worksheet-options hidden">
+            <h4 class="section-title">✏️ Letter Settings</h4>
+            <button class="option-btn" onclick="selectLetterCase('uppercase')" aria-label="Select Uppercase Letters">UPPERCASE (A-Z)</button>
+            <button class="option-btn" onclick="selectLetterCase('lowercase')" aria-label="Select Lowercase Letters">lowercase (a-z)</button>
+            <button class="option-btn" onclick="selectLetterCase('mixed')" aria-label="Select Mixed Case Letters">Mixed Case</button>
+            <h4 class="section-title">🎯 Letter Selection</h4>
+            <button class="option-btn" onclick="selectLetterMode('all')" aria-label="Select All Letters">All Letters (A-Z)</button>
+            <button class="option-btn" onclick="selectLetterMode('custom')" aria-label="Select Custom Letters">Custom Letters Only</button>
+            <div id="custom-letters-input" class="custom-input-group hidden">
+                <label for="customLetters">Enter letters to practice:</label>
+                <input type="text" id="customLetters" placeholder="Q L V M N R S" maxlength="50" aria-label="Custom letters input">
+                <div class="input-hint">Separate letters with spaces (e.g., A B C)</div>
+            </div>
+            <h4 class="section-title">🎲 Question Type</h4>
+            <button class="option-btn" onclick="selectType('alphabet-before')" aria-label="Select Before Only Questions">Before Only</button>
+            <button class="option-btn" onclick="selectType('alphabet-after')" aria-label="Select After Only Questions">After Only</button>
+            <button class="option-btn" onclick="selectType('alphabet-between')" aria-label="Select Between Only Questions">Between Only</button>
+            <button class="option-btn" onclick="selectType('alphabet-mixed')" aria-label="Select Mixed Before/After Questions">Mixed Before/After</button>
+            <button class="option-btn" onclick="selectType('alphabet-sequence')" aria-label="Select Fill Letter Sequences">Fill Letter Sequences</button>
+        </div>
+        <div id="number-options" class="worksheet-options hidden">
+            <h4 class="section-title">📊 Number Selection</h4>
+            <button class="option-btn" onclick="selectNumberMode('range')" aria-label="Select Number Range">Number Range</button>
+            <button class="option-btn" onclick="selectNumberMode('custom')" aria-label="Select Custom Numbers">Custom Numbers Only</button>
+            <div id="number-range-input" class="custom-input-group">
+                <div style="display: flex; gap: 20px;">
+                    <div style="flex: 1;"><label for="rangeFrom">From:</label><input type="number" id="rangeFrom" value="1" min="1" max="99" aria-label="Number range start"></div>
+                    <div style="flex: 1;"><label for="rangeTo">To:</label><input type="number" id="rangeTo" value="20" min="2" max="100" aria-label="Number range end"></div>
+                </div>
+            </div>
+            <div id="custom-numbers-input" class="custom-input-group hidden">
+                <label for="customNumbers">Enter numbers to practice:</label>
+                <input type="text" id="customNumbers" placeholder="2 5 7 10 15 18 21 25" maxlength="100" aria-label="Custom numbers input">
+                <div class="input-hint">Separate numbers with spaces (e.g., 2 5 7 10)</div>
+            </div>
+            <h4 class="section-title">🎯 Question Type</h4>
+            <button class="option-btn" onclick="selectType('number-before')" aria-label="Select What Comes Before Questions">What Comes Before?</button>
+            <button class="option-btn" onclick="selectType('number-after')" aria-label="Select What Comes After Questions">What Comes After?</button>
+            <button class="option-btn" onclick="selectType('number-between')" aria-label="Select What Comes Between Questions">What Comes Between?</button>
+            <button class="option-btn" onclick="selectType('number-mixed')" aria-label="Select Mixed Before/After Questions">Mixed Before/After</button>
+            <button class="option-btn" onclick="selectType('number-sequence')" aria-label="Select Fill Missing Numbers">Fill Missing Numbers</button>
+        </div>
+        <div style="margin-top: 30px;">
+            <button class="generate-btn" onclick="generateWorksheet()" aria-label="Generate Worksheets">✨ Generate Worksheets</button>
+            <button class="print-btn" onclick="printWorksheet()" aria-label="Print All Worksheets">🖨️ Print All Worksheets</button>
+        </div>
     </div>
-    <div class="text-center mt-3">
-      <button onclick="openDashboard()" class="underline text-xs">🔐 Parent Dashboard</button>
+    <div class="generation-progress" id="generationProgress">
+        <h3>📝 Generating Worksheets...</h3>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <p id="progressText">Preparing worksheet 1...</p>
     </div>
-  </div>
+    <div class="preview-panel" id="previewPanel">
+        <div class="preview-header">📖 Generated Worksheets Preview</div>
+        <div id="previewContent"></div>
+    </div>
+    <div id="worksheets-container"></div>
+    <script>
+        let selectedType = '', mainType = '', letterCase = '', letterMode = 'all', numberMode = 'range', alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', alphabetLower = 'abcdefghijklmnopqrstuvwxyz';
+        let isGenerating = false;
 
-  <!-- Parent Modal UI will go here -->
-<script>
-// ---------------------
-// Phase Structure & Game State
-// ---------------------
-const phases = {
-  1: { name: "Foundation", new: [31, 40], review: [11, 19] },
-  2: { name: "Growth", new: [41, 50], review: [31, 40] },
-  3: { name: "Advance", new: [51, 60], review: [41, 50] },
-  4: { name: "Mastery I", new: [61, 70], review: [51, 60] },
-  5: { name: "Mastery II", new: [71, 80], review: [61, 70] },
-  6: { name: "Final Step", new: [81, 100], review: [71, 80] }
-};
-
-let state = {
-  phase: 1,
-  mastery: {},        // {34: {tries: X, correct: Y, weakStreak: Z}}
-  scheduled: [],
-  weakQueue: [],
-  weakIndex: 0,
-  weakTracker: {},
-  currentNum: null,
-  customTest: null,
-  customIndex: 0,
-  showWeak: false,
-  approved: false
-};
-
-// ---------------------
-// Number → Words
-// ---------------------
-function numberToWords(n) {
-  const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
-  const teens = ["Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
-  const tens = ["", "", "Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
-  if (n < 10) return ones[n];
-  if (n < 20) return teens[n - 10];
-  const [t, o] = [Math.floor(n/10), n%10];
-  return tens[t] + (o ? " " + ones[o] : "");
-}
-
-// ---------------------
-// VOICE: Isha first, fallback to Ravi/Veena or en-IN
-// ---------------------
-function speak(text) {
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.rate = 0.9;
-  const voices = window.speechSynthesis.getVoices();
-  u.voice =
-    voices.find(v => v.name?.toLowerCase().includes("isha")) ||
-    voices.find(v => v.name?.toLowerCase().includes("ravi")) ||
-    voices.find(v => v.name?.toLowerCase().includes("veena")) ||
-    voices.find(v => v.lang === "en-IN") ||
-    voices.find(v => /^en-/.test(v.lang)) ||
-    voices[0];  // Fallback to default
-  window.speechSynthesis.speak(u);
-}
-
-function repeatNumber() {
-  if (state.currentNum != null) {
-    speak(numberToWords(state.currentNum));
-  }
-}
-
-// -------------------
-// Phase Scheduler: 3× new, 2× review, shuffled
-// -------------------
-function buildSchedule() {
-  const ph = phases[state.phase];
-  const newNums = Array.from({length: ph.new[1]-ph.new[0]+1}, (_,i)=>ph.new[0]+i);
-  const reviewNums = Array.from({length: ph.review[1]-ph.review[0]+1}, (_,i)=>ph.review[0]+i);
-  state.scheduled = [
-    ...newNums.flatMap(num => [num,num,num]),
-    ...reviewNums.flatMap(num => [num,num])
-  ].sort(() => Math.random() - 0.5);
-}
-</script>
-<script>
-// ------- Tricky Option Generation (Always includes correct answer!) -------
-function generateOptions(correct) {
-  let distractors = new Set();
-
-  // Add ±1 to ±7, but skip 'correct' and out-of-range
-  [-7, -4, -3, -2, -1, 1, 2, 3, 4, 7].forEach(offset => {
-    let v = correct + offset;
-    if (v >= 11 && v <= 100 && v !== correct) distractors.add(v);
-  });
-
-  // 6 <-> 9 swap
-  let str = String(correct);
-  if (str.includes("6")) {
-    let swapped = parseInt(str.replace("6", "9"));
-    if (swapped !== correct && swapped >= 11 && swapped <= 100) distractors.add(swapped);
-  }
-  if (str.includes("9")) {
-    let swapped = parseInt(str.replace("9", "6"));
-    if (swapped !== correct && swapped >= 11 && swapped <= 100) distractors.add(swapped);
-  }
-
-  // Reversed digits (if not the same)
-  if (str.length === 2 && str[0] !== str[1]) {
-    let rev = parseInt(str.split("").reverse().join(""));
-    if (rev !== correct && rev >= 11 && rev <= 100) distractors.add(rev);
-  }
-
-  // If fewer than 3 distractors, add randoms from same tens group
-  while (distractors.size < 6) {
-    let guess = Math.floor(correct / 10) * 10 + Math.floor(Math.random() * 10);
-    if (guess >= 11 && guess <= 100 && guess !== correct) distractors.add(guess);
-  }
-
-  // Combine correct + 3 distractors, shuffled
-  let final = [correct, ...Array.from(distractors).filter(n => n !== correct).slice(0, 3)];
-  return final.sort(() => Math.random() - 0.5);
-}
-
-// ------ Main Question Loop ------
-function showNext() {
-  // Custom Test Mode
-  if (state.customTest) {
-    if (state.customIndex >= state.customTest.length) {
-      state.customTest = null;
-      state.customIndex = 0;
-      showNext();
-      return;
-    }
-    presentQuestion(state.customTest[state.customIndex]);
-    state.customIndex++;
-    return;
-  }
-
-  // Weakness "3-in-a-row" mode
-  if (state.showWeak && state.weakQueue.length) {
-    let n = state.weakQueue[state.weakIndex % state.weakQueue.length];
-    presentQuestion(n, true);
-    state.weakIndex = (state.weakIndex + 1) % state.weakQueue.length;
-    return;
-  }
-
-  // Scheduled (phase) mode
-  if (state.scheduled.length) {
-    let n = state.scheduled.shift();
-    presentQuestion(n);
-    return;
-  }
-
-  // Mastery check
-  finishPhaseOrWeakMode();
-}
-
-// ------ Present a Question ------
-function presentQuestion(n, isWeakMode) {
-  state.currentNum = n;
-  document.getElementById("numberBox").textContent = numberToWords(n).toUpperCase();
-  document.getElementById("resultBox").textContent = "";
-  document.getElementById("starContainer").innerHTML = "";
-
-  let opts = generateOptions(n);
-  let container = document.getElementById("optionButtons");
-  container.innerHTML = "";
-  let answered = false;
-
-  opts.forEach(opt => {
-    let btn = document.createElement("button");
-    btn.textContent = opt;
-    btn.className = "option-btn";
-    btn.onclick = () => {
-      if (answered) return;
-      answered = true;
-
-      // Track tries/correct and weakstreak
-      if (!state.mastery[n]) state.mastery[n] = { tries: 0, correct: 0, weakStreak: 0 };
-      state.mastery[n].tries++;
-
-      let correct = (+opt === +n);
-
-      if (correct) {
-        state.mastery[n].correct++;
-        if (isWeakMode) state.mastery[n].weakStreak = (state.mastery[n].weakStreak || 0) + 1;
-        else state.mastery[n].weakStreak = 0;
-        document.getElementById("resultBox").textContent = "✅ Correct!";
-        speak("Correct!");
-        showStars();
-      } else {
-        if (isWeakMode) state.mastery[n].weakStreak = 0;
-        document.getElementById("resultBox").textContent = `❌ This is ${numberToWords(n)}`;
-        speak(`Oops! This is number ${numberToWords(n)}`);
-      }
-
-      document.querySelectorAll(".option-btn").forEach(b => b.disabled = true);
-
-      setTimeout(() => {
-        document.getElementById("resultBox").textContent = "";
-        // Remove weak number after 3-correct-in-row
-        if (isWeakMode && correct) {
-          if (state.mastery[n].weakStreak >= 3) {
-            state.weakQueue = state.weakQueue.filter(x => x !== n);
-            state.mastery[n].weakStreak = 0;
-          }
+        function selectMainType(type) {
+            mainType = type;
+            selectedType = '';
+            letterCase = '';
+            letterMode = 'all';
+            numberMode = 'range';
+            document.getElementById('alphabet-options').classList.add('hidden');
+            document.getElementById('number-options').classList.add('hidden');
+            document.getElementById('custom-letters-input').classList.add('hidden');
+            document.getElementById('custom-numbers-input').classList.add('hidden');
+            document.getElementById('number-range-input').classList.remove('hidden');
+            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            if (type === 'alphabet') document.getElementById('alphabet-options').classList.remove('hidden');
+            else if (type === 'number') document.getElementById('number-options').classList.remove('hidden');
         }
-        showNext();
-        updateStatsDisplay();
-      }, 1300);
-    };
-    container.appendChild(btn);
-  });
 
-  speak(numberToWords(n));
-  updateStatsDisplay();
-}
+        function selectLetterMode(mode) {
+            letterMode = mode;
+            const parentDiv = event.target.parentElement;
+            const modeButtons = parentDiv.querySelectorAll('.option-btn');
+            modeButtons.forEach(btn => {
+                if (btn.onclick && btn.onclick.toString().includes('selectLetterMode')) {
+                    btn.classList.remove('active');
+                }
+            });
+            event.target.classList.add('active');
+            if (mode === 'custom') {
+                document.getElementById('custom-letters-input').classList.remove('hidden');
+            } else {
+                document.getElementById('custom-letters-input').classList.add('hidden');
+            }
+        }
 
-// ------ Mastery/Phase Check and Weak Loop ------
-function finishPhaseOrWeakMode() {
-  const ph = phases[state.phase];
-  const newNums = Array.from({length: ph.new[1] - ph.new[0] + 1}, (_,i) => ph.new[0] + i);
-  const reviewNums = Array.from({length: ph.review[1] - ph.review[0] + 1}, (_,i) => ph.review[0] + i);
-  const allSet = [...newNums, ...reviewNums];
+        function selectNumberMode(mode) {
+            numberMode = mode;
+            const parentDiv = event.target.parentElement;
+            const modeButtons = parentDiv.querySelectorAll('.option-btn');
+            modeButtons.forEach(btn => {
+                if (btn.onclick && btn.onclick.toString().includes('selectNumberMode')) {
+                    btn.classList.remove('active');
+                }
+            });
+            event.target.classList.add('active');
+            if (mode === 'custom') {
+                document.getElementById('custom-numbers-input').classList.remove('hidden');
+                document.getElementById('number-range-input').classList.add('hidden');
+            } else {
+                document.getElementById('custom-numbers-input').classList.add('hidden');
+                document.getElementById('number-range-input').classList.remove('hidden');
+            }
+        }
 
-  // Weakness = not enough correct or not enough tries
-  const weak = allSet.filter(n =>
-    !state.mastery[n] ||
-    state.mastery[n].correct < ((newNums.includes(n)) ? 3 : 2) ||
-    state.mastery[n].correct < state.mastery[n].tries
-  );
+        function selectLetterCase(caseType) {
+            letterCase = caseType;
+            const parentDiv = event.target.parentElement;
+            const caseButtons = parentDiv.querySelectorAll('.option-btn');
+            caseButtons.forEach(btn => {
+                if (btn.onclick && btn.onclick.toString().includes('selectLetterCase')) {
+                    btn.classList.remove('active');
+                }
+            });
+            event.target.classList.add('active');
+        }
 
-  if (weak.length) {
-    state.weakQueue = weak.slice();
-    state.weakIndex = 0;
-    state.showWeak = true;
-    showNext();
-    return;
-  }
+        function selectType(type) {
+            selectedType = type;
+            const parentDiv = event.target.parentElement;
+            const typeButtons = parentDiv.querySelectorAll('.option-btn');
+            typeButtons.forEach(btn => {
+                if (btn.onclick && btn.onclick.toString().includes('selectType')) {
+                    btn.classList.remove('active');
+                }
+            });
+            event.target.classList.add('active');
+        }
 
-  document.getElementById("phaseLockMsg").textContent = "🎉 100% Mastery! Awaiting parent approval.";
-  speak("Phase complete. Awaiting parent approval. Please call a parent.");
-}
-</script>
-<script>
-// ----- Dashboard Logic -----
-function openDashboard() {
-  const user = prompt("Username:");
-  const pass = prompt("Password:");
-  if (user === "suneet" && pass === "Suneet@123") {
-    renderDashboard();
-    document.getElementById('dashboardModal').style.display = '';
-  } else {
-    alert("Access denied.");
-  }
-}
+        function updateProgress(current, total) {
+            const progressBar = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            progressBar.style.width = (current / total) * 100 + '%';
+            progressText.textContent = `Generating worksheet ${current} of ${total}...`;
+        }
 
-function closeDashboard() {
-  document.getElementById('dashboardModal').style.display = 'none';
-}
+        async function generateWorksheet() {
+            if (isGenerating) return;
+            isGenerating = true;
+            const generateBtn = document.querySelector('.generate-btn');
+            const originalText = generateBtn.innerHTML;
 
-function renderDashboard() {
-  const ph = phases[state.phase];
-  let nums = [];
-  for (let i = ph.new[0]; i <= ph.new[1]; i++) nums.push(i);
-  for (let i = ph.review[0]; i <= ph.review[1]; i++) if (!nums.includes(i)) nums.push(i);
+            // Validation checks
+            if (!selectedType || !mainType) {
+                showNotification('Please select a test type and question type first!', 'error');
+                isGenerating = false;
+                return;
+            }
+            if (mainType === 'alphabet' && !letterCase) {
+                showNotification('Please select a letter case (UPPERCASE/lowercase/Mixed) first!', 'error');
+                isGenerating = false;
+                return;
+            }
 
-  let out = `<table class="text-xs w-full text-center mb-3"><thead><tr><th>#</th><th>✔</th><th>Tries</th><th>%</th></tr></thead><tbody>`;
-  nums.forEach(n => {
-    const d = state.mastery[n] || { correct: 0, tries: 0 };
-    let acc = d.tries ? Math.round((d.correct / d.tries) * 100) : "--";
-    out += `<tr><td>${n}</td><td>${d.correct}</td><td>${d.tries}</td><td>${acc}</td></tr>`;
-  });
-  out += "</tbody></table>";
+            const worksheetCount = parseInt(document.getElementById('worksheetCount').value) || 1;
+            let questionsPerWorksheet = parseInt(document.getElementById('questionsPerWorksheet').value) || 20;
 
-  const weak = nums.filter(n => {
-    const d = state.mastery[n];
-    const needed = (ph.new[0] <= n && n <= ph.new[1]) ? 3 : 2;
-    return !d || d.correct < needed;
-  });
+            if (selectedType.includes('sequence')) {
+                questionsPerWorksheet = Math.min(questionsPerWorksheet, 10);
+            } else {
+                questionsPerWorksheet = Math.min(questionsPerWorksheet, 20);
+            }
 
-  out += weak.length
-    ? `<div class="text-yellow-600">Weak: ${weak.join(", ")}</div>`
-    : `<div class="text-green-600">✅ No Weak Numbers!</div>`;
+            generateBtn.innerHTML = originalText + '<span class="loading"></span>';
+            generateBtn.disabled = true;
+            document.getElementById('generationProgress').classList.add('show');
+            const container = document.getElementById('worksheets-container');
+            container.innerHTML = '';
+            document.getElementById('previewPanel').classList.remove('show');
+            document.getElementById('previewContent').innerHTML = '';
 
-  document.getElementById("dashboardTable").innerHTML = out;
-}
+                            try {
+                for (let i = 1; i <= worksheetCount; i++) {
+                    updateProgress(i, worksheetCount);
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    if (mainType === 'alphabet') {
+                        await generateAlphabetWorksheet(i, questionsPerWorksheet);
+                    } else if (mainType === 'number') {
+                        await generateNumberWorksheet(i, questionsPerWorksheet);
+                    }
+                }
+                document.getElementById('generationProgress').classList.remove('show');
+                generateBtn.innerHTML = originalText + '<span class="success-checkmark">✓</span>';
+                showNotification(`Successfully generated ${worksheetCount} worksheet(s)!`, 'success');
+                document.getElementById('worksheets-container').scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('previewPanel').classList.add('show');
+            } catch (error) {
+                document.getElementById('generationProgress').classList.remove('show');
+                showNotification('Error generating worksheets. Please try again.', 'error');
+                console.error('Generation error:', error);
+            }
 
-function approvePhase() {
-  const ph = phases[state.phase];
-  let allGood = true;
+            setTimeout(() => {
+                generateBtn.innerHTML = originalText;
+                generateBtn.disabled = false;
+                isGenerating = false;
+            }, 2000);
+        }
 
-  for (let i = ph.new[0]; i <= ph.new[1]; i++) {
-    const d = state.mastery[i];
-    if (!d || d.correct < 3 || d.correct < d.tries) {
-      allGood = false;
-      break;
-    }
-  }
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `position: fixed; top: 20px; right: 20px; padding: 15px 20px; border-radius: 10px; color: white; font-weight: bold; z-index: 1000; animation: fadeInRight 0.3s ease; font-size: 20.8px; ${type === 'error' ? 'background: linear-gradient(135deg, #ff6b6b, #ff5722);' : 'background: linear-gradient(135deg, #56ab2f, #a8e6cf);'}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
 
-  for (let i = ph.review[0]; i <= ph.review[1]; i++) {
-    const d = state.mastery[i];
-    if (!d || d.correct < 2 || d.correct < d.tries) {
-      allGood = false;
-      break;
-    }
-  }
+        async function generateAlphabetWorksheet(worksheetNumber, questionCount) {
+            const questions = [];
+            let title = '';
+            let caseTitle = letterCase === 'uppercase' ? 'UPPERCASE' : letterCase === 'lowercase' ? 'lowercase' : 'Mixed Case';
+            let availableLetters = [];
+            let customTitle = '';
 
-  if (allGood) {
-    state.phase++;
-    if (!phases[state.phase]) {
-      alert("🎉 All phases complete! Restarting.");
-      resetProgress();
-      return;
-    }
-    alert(`✅ Phase advanced to: ${phases[state.phase].name}`);
-    closeDashboard();
-    initPhase();
-  } else {
-    alert("Not all numbers are mastered yet.");
-  }
-}
+            if (letterMode === 'custom') {
+                const customInput = document.getElementById('customLetters').value.trim();
+                const inputLetters = customInput.split(/\s+/).filter(letter => 
+                    letter.match(letterCase === 'lowercase' ? /^[a-z]$/ : letterCase === 'uppercase' ? /^[A-Z]$/ : /^[A-Za-z]$/)
+                );
+                const uniqueLetters = [...new Set(inputLetters)];
+                availableLetters = uniqueLetters.map(letter => 
+                    letterCase === 'lowercase' ? alphabetLower.indexOf(letter) : alphabet.indexOf(letter.toUpperCase())
+                ).filter(index => index >= 0);
+                customTitle = ` (Custom: ${uniqueLetters.join(' ')})`;
+                
+                if (availableLetters.length < (selectedType === 'alphabet-sequence' ? 3 : 1)) {
+                    showNotification(`Please enter at least ${selectedType === 'alphabet-sequence' ? '3' : '1'} valid letter(s)!`, 'error');
+                    return;
+                }
+            }
 
-function resetProgress() {
-  if (confirm("Are you sure? This will erase all progress.")) {
-    state = {
-      phase: 1,
-      mastery: {},
-      scheduled: [],
-      weakQueue: [],
-      weakIndex: 0,
-      weakTracker: {},
-      currentNum: null,
-      customTest: null,
-      customIndex: 0,
-      showWeak: false,
-      approved: false
-    };
-    closeDashboard();
-    initPhase();
-  }
-}
+            if (selectedType === 'alphabet-sequence') {
+                const numSequences = Math.ceil(questionCount / 2); // More sequences per worksheet
+                for (let i = 0; i < numSequences; i++) {
+                    let sequenceLength = 13; // Fixed to 13 boxes for alphabets
+                    let startIndex;
 
-function exportCSV() {
-  const rows = ["Number,Correct,Tries,Accuracy"];
-  const allNums = Object.keys(state.mastery).sort((a,b)=>+a - +b);
-  allNums.forEach(n => {
-    const d = state.mastery[n];
-    const acc = d.tries ? Math.round(d.correct / d.tries * 100) : "";
-    rows.push(`${n},${d.correct},${d.tries},${acc}`);
-  });
-  const blob = new Blob([rows.join("\n")], {type: "text/csv"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `Abhijaat_Progress_Phase${state.phase}.csv`;
-  a.click();
-}
+                    if (letterMode === 'custom' && availableLetters.length >= 13) {
+                        // For custom mode, ensure we have enough letters
+                        const sortedLetters = availableLetters.sort((a, b) => a - b);
+                        const maxStart = Math.max(0, sortedLetters.length - sequenceLength);
+                        startIndex = sortedLetters[Math.floor(Math.random() * (maxStart + 1))];
+                    } else if (letterMode === 'custom') {
+                        // If custom letters are less than 13, use all available
+                        sequenceLength = Math.max(8, availableLetters.length);
+                        startIndex = Math.min(...availableLetters);
+                    } else {
+                        // Regular mode - ensure we don't go beyond Z
+                        startIndex = Math.floor(Math.random() * (26 - sequenceLength + 1));
+                    }
 
-function startCustomTest() {
-  const raw = document.getElementById("customTestNums").value.trim();
-  if (!raw) return alert("Enter comma-separated numbers.");
-  const nums = raw.split(",").map(x => +x.trim()).filter(n => n >= 11 && n <= 100);
-  if (!nums.length) return alert("No valid numbers entered.");
-  state.customTest = nums;
-  state.customIndex = 0;
-  closeDashboard();
-  showNext();
-}
+                    const sequence = [];
+                    const missingPositions = [];
+                    const numMissing = 5; // Fixed to 5 blank boxes for alphabets
 
-function triggerBooster() {
-  const ph = phases[state.phase];
-  const nums = [];
-  for (let i = ph.new[0]; i <= ph.new[1]; i++) nums.push(i);
-  for (let i = ph.review[0]; i <= ph.review[1]; i++) if (!nums.includes(i)) nums.push(i);
-  const weak = nums.filter(n => {
-    const d = state.mastery[n];
-    const needed = (ph.new[0] <= n && n <= ph.new[1]) ? 3 : 2;
-    return !d || d.correct < needed;
-  });
-  if (!weak.length) {
-    alert("No weak numbers to boost!");
-    closeDashboard();
-    return;
-  }
-  state.weakQueue = weak;
-  state.weakIndex = 0;
-  state.showWeak = true;
-  closeDashboard();
-  showNext();
-}
+                    // Build the sequence
+                    for (let j = 0; j < sequenceLength; j++) {
+                        const currentIndex = startIndex + j;
+                        if (currentIndex < 26) {
+                            let useUpper = letterCase === 'lowercase' ? false : letterCase === 'mixed' ? Math.random() < 0.4 : true;
+                            sequence.push(useUpper ? alphabet[currentIndex] : alphabetLower[currentIndex]);
+                        }
+                    }
 
-// ----- Star reward -------
-function showStars() {
-  const el = document.getElementById("starContainer");
-  el.innerHTML = `<div class="star-animate">
-    <span style="color: gold;">★</span>
-    <span style="color: gold;">★</span>
-    <span style="color: gold;">★</span>
-    <span style="color: gold;">★</span>
-    <span style="color: gold;">★</span>
-  </div>`;
-  setTimeout(() => el.innerHTML = "", 1200);
-}
+                    // Select positions to make blank (avoid first and last)
+                    const availablePositions = Array.from({ length: sequenceLength - 2 }, (_, i) => i + 1);
+                    while (missingPositions.length < numMissing && availablePositions.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * availablePositions.length);
+                        missingPositions.push(availablePositions[randomIndex]);
+                        availablePositions.splice(randomIndex, 1);
+                    }
+                    missingPositions.sort((a, b) => a - b);
 
-// ----- App Start -----
-window.onload = () => {
-  setTimeout(() => speechSynthesis.getVoices(), 100);
-  buildSchedule();
-  showNext();
-};
-</script>
+                    questions.push({ 
+                        question: 'Fill in the missing letters:', 
+                        sequence: sequence, 
+                        missingPositions: missingPositions, 
+                        type: 'sequence' 
+                    });
+                }
+                title = `${caseTitle} Alphabet - Fill Missing Letters in Sequence${customTitle}`;
+            } else {
+                const usedQuestions = new Set();
+                const maxAttempts = 100;
+
+                for (let i = 0, attempts = 0; i < questionCount && attempts < maxAttempts; attempts++) {
+                    let randomIndex, letter, answer, questionText, questionType;
+                    let useUpper = letterCase === 'lowercase' ? false : letterCase === 'mixed' ? Math.random() < 0.4 : true;
+                    const currentAlphabet = useUpper ? alphabet : alphabetLower;
+
+                    if (letterMode === 'custom' && availableLetters.length > 0) {
+                        randomIndex = availableLetters[Math.floor(Math.random() * availableLetters.length)];
+                    } else {
+                        randomIndex = Math.floor(Math.random() * 26);
+                    }
+
+                    if (selectedType === 'alphabet-mixed') {
+                        const questionTypes = ['before', 'after'];
+                        const isBeforeType = questionTypes[i % 2];
+                        if (isBeforeType === 'before' && randomIndex > 0) {
+                            letter = currentAlphabet[randomIndex];
+                            answer = currentAlphabet[randomIndex - 1];
+                            questionText = `What comes BEFORE ${letter}?`;
+                            questionType = 'before';
+                        } else if (randomIndex < 25) {
+                            letter = currentAlphabet[randomIndex];
+                            answer = currentAlphabet[randomIndex + 1];
+                            questionText = `What comes AFTER ${letter}?`;
+                            questionType = 'after';
+                        }
+                        if (!title) title = `${caseTitle} Alphabet - Mixed Before/After${customTitle}`;
+                    } else if (selectedType === 'alphabet-before' && randomIndex > 0) {
+                        letter = currentAlphabet[randomIndex];
+                        answer = currentAlphabet[randomIndex - 1];
+                        questionText = `What comes BEFORE ${letter}?`;
+                        questionType = 'before';
+                        if (!title) title = `${caseTitle} Alphabet - What Comes Before?${customTitle}`;
+                    } else if (selectedType === 'alphabet-after' && randomIndex < 25) {
+                        letter = currentAlphabet[randomIndex];
+                        answer = currentAlphabet[randomIndex + 1];
+                        questionText = `What comes AFTER ${letter}?`;
+                        questionType = 'after';
+                        if (!title) title = `${caseTitle} Alphabet - What Comes After?${customTitle}`;
+                    } else if (selectedType === 'alphabet-between' && randomIndex > 0 && randomIndex < 25) {
+                        const firstLetter = currentAlphabet[randomIndex - 1];
+                        const lastLetter = currentAlphabet[randomIndex + 1];
+                        answer = currentAlphabet[randomIndex];
+                        questionText = `${firstLetter}____${lastLetter}`;
+                        questionType = 'between';
+                        if (!title) title = `${caseTitle} Alphabet - What Comes Between?${customTitle}`;
+                    }
+
+                    if (questionText && !usedQuestions.has(questionText)) {
+                        usedQuestions.add(questionText);
+                        questions.push({ question: questionText, answer: answer, type: questionType });
+                        i++;
+                    }
+                }
+                if (questions.length < questionCount) {
+                    console.warn(`Only generated ${questions.length} unique questions for worksheet ${worksheetNumber}`);
+                }
+            }
+            createWorksheet(title, questions, worksheetNumber);
+        }
+
+        async function generateNumberWorksheet(worksheetNumber, questionCount) {
+            const questions = [];
+            let title = '';
+            let availableNumbers = [];
+            let customTitle = '';
+
+            if (numberMode === 'custom') {
+                const customInput = document.getElementById('customNumbers').value.trim();
+                if (!customInput) {
+                    showNotification('Please enter the numbers you want to practice!', 'error');
+                    return;
+                }
+                // FIXED: Better parsing of custom numbers
+                const inputNumbers = customInput.split(/[\s,]+/).filter(num => 
+                    num.trim() !== '' && /^\d+$/.test(num.trim()) && 
+                    parseInt(num.trim()) >= 1 && parseInt(num.trim()) <= 100
+                );
+                
+                if (inputNumbers.length < (selectedType === 'number-sequence' ? 3 : 1)) {
+                    showNotification(`Please enter at least ${selectedType === 'number-sequence' ? '3' : '1'} valid number(s) between 1-100!`, 'error');
+                    return;
+                }
+                
+                availableNumbers = [...new Set(inputNumbers.map(num => parseInt(num.trim())))].sort((a, b) => a - b);
+                customTitle = ` (Custom: ${availableNumbers.join(' ')})`;
+            } else {
+                const rangeFrom = parseInt(document.getElementById('rangeFrom').value) || 1;
+                const rangeTo = parseInt(document.getElementById('rangeTo').value) || 20;
+                if (rangeFrom >= rangeTo || rangeFrom < 1 || rangeTo > 100) {
+                    showNotification('Please enter a valid range (From < To, range: 1-100)!', 'error');
+                    return;
+                }
+                availableNumbers = Array.from({ length: rangeTo - rangeFrom + 1 }, (_, i) => rangeFrom + i);
+            }
+
+            if (selectedType === 'number-sequence') {
+                const numSequences = Math.ceil(questionCount / 2); // More sequences per worksheet
+                for (let i = 0; i < numSequences; i++) {
+                    let sequenceLength = 21; // Fixed to 21 boxes for numbers
+                    let startIndex;
+                    
+                    if (numberMode === 'custom' && availableNumbers.length >= 21) {
+                        // For custom mode with enough numbers
+                        startIndex = Math.floor(Math.random() * Math.max(1, availableNumbers.length - sequenceLength + 1));
+                    } else if (numberMode === 'custom') {
+                        // If custom numbers are less than 21, use all available
+                        sequenceLength = Math.max(10, availableNumbers.length);
+                        startIndex = 0;
+                    } else {
+                        // Regular range mode - ensure we don't exceed available range
+                        const maxPossibleStart = Math.max(0, availableNumbers.length - sequenceLength);
+                        startIndex = Math.floor(Math.random() * (maxPossibleStart + 1));
+                    }
+                    
+                    const sequence = availableNumbers.slice(startIndex, startIndex + sequenceLength);
+                    const missingPositions = [];
+                    const numMissing = 7; // Fixed to 7 blank boxes for numbers
+
+                    // Select positions to make blank (avoid first and last few)
+                    const availablePositions = Array.from({ length: sequenceLength - 4 }, (_, i) => i + 2);
+                    while (missingPositions.length < numMissing && availablePositions.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * availablePositions.length);
+                        missingPositions.push(availablePositions[randomIndex]);
+                        availablePositions.splice(randomIndex, 1);
+                    }
+                    missingPositions.sort((a, b) => a - b);
+
+                    questions.push({ 
+                        question: 'Fill in the missing numbers:', 
+                        sequence: sequence, 
+                        missingPositions: missingPositions, 
+                        type: 'sequence' 
+                    });
+                }
+                title = numberMode === 'custom' 
+                    ? `Numbers - Fill Missing Numbers in Sequence${customTitle}`
+                    : `Numbers ${availableNumbers[0]}-${availableNumbers[availableNumbers.length - 1]} - Fill Missing Numbers`;
+            } else {
+                const usedQuestions = new Set();
+                const maxAttempts = 200; // Increased attempts for better generation
+
+                for (let i = 0, attempts = 0; i < questionCount && attempts < maxAttempts; attempts++) {
+                    let number, answer, questionText, questionType;
+
+                    if (selectedType === 'number-mixed') {
+                        const questionTypes = ['before', 'after'];
+                        const isBeforeType = questionTypes[i % 2] === 'before';
+                        
+                        if (isBeforeType) {
+                            // FIXED: For "before" questions, pick numbers that have a predecessor in available numbers
+                            const validNumbers = availableNumbers.filter(num => {
+                                if (numberMode === 'custom') {
+                                    return availableNumbers.includes(num - 1);
+                                } else {
+                                    return num > availableNumbers[0]; // Range mode
+                                }
+                            });
+                            
+                            if (validNumbers.length > 0) {
+                                number = validNumbers[Math.floor(Math.random() * validNumbers.length)];
+                                answer = number - 1;
+                                questionText = `What comes BEFORE ${number}?`;
+                                questionType = 'before';
+                            }
+                        } else {
+                            // FIXED: For "after" questions, pick numbers that have a successor in available numbers
+                            const validNumbers = availableNumbers.filter(num => {
+                                if (numberMode === 'custom') {
+                                    return availableNumbers.includes(num + 1);
+                                } else {
+                                    return num < availableNumbers[availableNumbers.length - 1]; // Range mode
+                                }
+                            });
+                            
+                            if (validNumbers.length > 0) {
+                                number = validNumbers[Math.floor(Math.random() * validNumbers.length)];
+                                answer = number + 1;
+                                questionText = `What comes AFTER ${number}?`;
+                                questionType = 'after';
+                            }
+                        }
+                        if (!title) title = numberMode === 'custom' 
+                            ? `Numbers - Mixed Before/After${customTitle}`
+                            : `Numbers ${availableNumbers[0]}-${availableNumbers[availableNumbers.length - 1]} - Mixed Before/After`;
+                    } else if (selectedType === 'number-before') {
+                        // FIXED: Better validation for "before" questions
+                        const validNumbers = availableNumbers.filter(num => {
+                            if (numberMode === 'custom') {
+                                return availableNumbers.includes(num - 1);
+                            } else {
+                                return num > availableNumbers[0];
+                            }
+                        });
+                        
+                        if (validNumbers.length > 0) {
+                            number = validNumbers[Math.floor(Math.random() * validNumbers.length)];
+                            answer = number - 1;
+                            questionText = `What comes BEFORE ${number}?`;
+                            questionType = 'before';
+                        }
+                        if (!title) title = numberMode === 'custom' 
+                            ? `Numbers - What Comes Before?${customTitle}`
+                            : `Numbers ${availableNumbers[0]}-${availableNumbers[availableNumbers.length - 1]} - What Comes Before?`;
+                    } else if (selectedType === 'number-after') {
+                        // FIXED: Better validation for "after" questions
+                        const validNumbers = availableNumbers.filter(num => {
+                            if (numberMode === 'custom') {
+                                return availableNumbers.includes(num + 1);
+                            } else {
+                                return num < availableNumbers[availableNumbers.length - 1];
+                            }
+                        });
+                        
+                        if (validNumbers.length > 0) {
+                            number = validNumbers[Math.floor(Math.random() * validNumbers.length)];
+                            answer = number + 1;
+                            questionText = `What comes AFTER ${number}?`;
+                            questionType = 'after';
+                        }
+                        if (!title) title = numberMode === 'custom' 
+                            ? `Numbers - What Comes After?${customTitle}`
+                            : `Numbers ${availableNumbers[0]}-${availableNumbers[availableNumbers.length - 1]} - What Comes After?`;
+                    } else if (selectedType === 'number-between') {
+                        // FIXED: Better validation for "between" questions
+                        const validNumbers = availableNumbers.filter(num => {
+                            if (numberMode === 'custom') {
+                                return availableNumbers.includes(num - 1) && availableNumbers.includes(num + 1);
+                            } else {
+                                return num > availableNumbers[0] && num < availableNumbers[availableNumbers.length - 1];
+                            }
+                        });
+                        
+                        if (validNumbers.length > 0) {
+                            const middleNumber = validNumbers[Math.floor(Math.random() * validNumbers.length)];
+                            const firstNum = middleNumber - 1;
+                            const thirdNum = middleNumber + 1;
+                            answer = middleNumber;
+                            questionText = `${firstNum}____${thirdNum}`;
+                            questionType = 'between';
+                        }
+                        if (!title) title = numberMode === 'custom' 
+                            ? `Numbers - What Comes Between?${customTitle}`
+                            : `Numbers ${availableNumbers[0]}-${availableNumbers[availableNumbers.length - 1]} - What Comes Between?`;
+                    }
+
+                    if (questionText && !usedQuestions.has(questionText)) {
+                        usedQuestions.add(questionText);
+                        questions.push({ question: questionText, answer: answer.toString(), type: questionType });
+                        i++;
+                    }
+                }
+                
+                // FIXED: Fallback generation if not enough questions
+                if (questions.length < questionCount) {
+                    console.warn(`Generated ${questions.length} questions, trying to add more...`);
+                    // Try to add simple "after" questions as fallback
+                    for (let i = questions.length; i < questionCount; i++) {
+                        const availableForAfter = availableNumbers.filter(num => num < 99);
+                        if (availableForAfter.length > 0) {
+                            const randomNum = availableForAfter[Math.floor(Math.random() * availableForAfter.length)];
+                            const questionText = `What comes AFTER ${randomNum}?`;
+                            if (!usedQuestions.has(questionText)) {
+                                usedQuestions.add(questionText);
+                                questions.push({ 
+                                    question: questionText, 
+                                    answer: (randomNum + 1).toString(), 
+                                    type: 'after' 
+                                });
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            if (questions.length === 0) {
+                showNotification('Unable to generate questions with the current number selection. Try different numbers or range.', 'error');
+                return;
+            }
+            
+            createWorksheet(title, questions, worksheetNumber);
+        }
+
+        function createWorksheet(title, questions, worksheetNumber) {
+            const worksheet = document.createElement('div');
+            worksheet.className = 'worksheet';
+            
+            const header = document.createElement('div');
+            header.className = 'worksheet-header';
+            header.innerHTML = `
+                <div class="worksheet-title">${title}</div>
+                <div class="worksheet-subtitle">Worksheet ${worksheetNumber} • Name: _________________ • Date: _________________</div>
+            `;
+            
+            const questionsGrid = document.createElement('div');
+            questionsGrid.className = 'questions-grid';
+            
+            questions.forEach((q, index) => {
+                const questionItem = document.createElement('div');
+                questionItem.className = `question-item ${q.type}-type`;
+                
+                if (q.type === 'sequence') {
+                    const isAlphabet = selectedType === 'alphabet-sequence';
+                    questionItem.className += isAlphabet ? ' alphabet-sequence-item' : ' number-sequence-item';
+                    
+                    questionItem.innerHTML = `
+                        <div class="question-content">
+                            <span class="question-number">${index + 1}</span>
+                            <h4>${q.question}</h4>
+                        </div>
+                        <div class="sequence-container">
+                            ${q.sequence.map((item, i) => {
+                                if (q.missingPositions.includes(i)) {
+                                    return isAlphabet 
+                                        ? `<div class="sequence-blank letter-box"><div class="line-1"></div><div class="line-2"></div></div>`
+                                        : `<div class="sequence-blank"></div>`;
+                                } else {
+                                    return `<div class="sequence-number">${item}</div>`;
+                                }
+                            }).join('')}
+                        </div>
+                    `;
+                } else if (q.type === 'between') {
+                    const parts = q.question.split('____');
+                    const isAlphabet = selectedType.includes('alphabet');
+                    
+                    questionItem.innerHTML = `
+                        <div class="question-content">
+                            <span class="question-number">${index + 1}</span>
+                            <div class="question-content-inner">
+                                <div class="between-elements">
+                                    <span class="between-letter">${parts[0]}</span>
+                                    ${isAlphabet 
+                                        ? `<div class="answer-box letter-box"><div class="line-1"></div><div class="line-2"></div></div>`
+                                        : `<div class="answer-box number-box"></div>`
+                                    }
+                                    <span class="between-letter">${parts[1]}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const isAlphabet = selectedType.includes('alphabet');
+                    questionItem.innerHTML = `
+                        <div class="question-content">
+                            <span class="question-number">${index + 1}</span>
+                            <div class="question-content-inner">
+                                ${isAlphabet 
+                                    ? `<div class="answer-box letter-box"><div class="line-1"></div><div class="line-2"></div></div>`
+                                    : `<div class="answer-box number-box"></div>`
+                                }
+                            </div>
+                            <h4>${q.question}</h4>
+                        </div>
+                    `;
+                }
+                
+                questionsGrid.appendChild(questionItem);
+            });
+            
+            worksheet.appendChild(header);
+            worksheet.appendChild(questionsGrid);
+            document.getElementById('worksheets-container').appendChild(worksheet);
+            
+            if (worksheetNumber === 1) {
+                const previewContent = document.getElementById('previewContent');
+                previewContent.innerHTML = `
+                    <div style="font-size: 18px; color: #666; margin-bottom: 10px;">
+                        <strong>Title:</strong> ${title}
+                    </div>
+                    <div style="font-size: 16px; color: #666; margin-bottom: 10px;">
+                        <strong>Total Questions:</strong> ${questions.length}
+                    </div>
+                    <div style="font-size: 16px; color: #666;">
+                        <strong>Question Types:</strong> ${[...new Set(questions.map(q => q.type))].join(', ')}
+                    </div>
+                `;
+            }
+        }
+
+        function printWorksheet() {
+            const worksheets = document.querySelectorAll('.worksheet');
+            if (worksheets.length === 0) {
+                showNotification('Please generate worksheets first before printing!', 'error');
+                return;
+            }
+            
+            showNotification('Preparing worksheets for printing...', 'success');
+            setTimeout(() => {
+                window.print();
+            }, 1000);
+        }
+    </script>
 </body>
 </html>
